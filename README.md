@@ -3,3 +3,6 @@
 jQuery pin annotation plugin [ under development ]
 
 ![jquery-pin-annotation](https://i.imgur.com/judkDOD.jpg)
+
+
+Authors: Marco Manservigi, Alessio Koci
