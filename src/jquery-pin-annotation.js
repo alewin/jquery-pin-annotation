@@ -1,5 +1,5 @@
 (function($) {
-  $.fn.pinout = function(options) {
+  $.fn.pinannotation = function(options) {
     var $pinWrap = $(this);
     var pinHammer;
     var freeze = false;
@@ -10,6 +10,7 @@
       placeholderText: 'Add note',
       image: '',
       openPopUpOnAdd: false,
+      closeOtherPopups: true,
       onLoadPlugin: function() {},
       onPinRemove: function() {},
       onPinAdded: function() {},
@@ -39,7 +40,9 @@
     var openPin = function($pin) {
       console.log('open pin ', $pin.find('.pin-popup').length);
 
-      if ($pin.find('.pin-popup').length > 0) return;
+      if (settings.closeOtherPopups) {
+        $pinWrap.find('.pin-popup').remove();
+      }
 
       $('<div/>', { class: 'pin-popup', append: `<textarea placeholder='${settings.placeholderText}' class='annotation-text-pin'> ${$pin.data('annotation')} </textarea>${popUpDom.btn_save} ${popUpDom.btn_remove}` }).appendTo($pin);
       $pin.find('.pin-popup textarea').val('');
@@ -51,7 +54,6 @@
 
     var closePin = function($pin) {
       console.log('close pin ');
-
       if ($.isFunction(settings.onPinPopUpClose)) {
         settings.onPinPopUpClose.call(this);
       }
@@ -104,7 +106,7 @@
       $(`<div/>`, { class: 'pin', style: 'left:' + posX + '%; top:' + posY + '%;', 'data-annotation': '' }).appendTo($pinWrap);
 
       if (settings.openPopUpOnAdd) {
-        openPin($pinWrap.find('.pin'));
+        openPin($pinWrap.find('.pin').last());
       }
     };
 
