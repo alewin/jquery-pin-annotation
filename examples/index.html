@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>jQuery pin Annotation</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="../src/jquery-pin-annotation.js"></script>
+</head>
+
+<body>
+  <div id="pin-wrap">
+  </div>
+
+  <style>
+    #pin-wrap {
+      position: relative;
+      border: 1px solid yellow;
+      width: 80vw;
+      display: inline-block;
+    }
+
+    #pin-wrap img {
+      width: 100%;
+      height: auto;
+      pointer-events: none;
+    }
+
+    #pin-wrap .pin {
+      position: absolute;
+      width: 40px;
+      height: 40px;
+      border-radius: 40px;
+      background-color: rgb(30, 82, 149);
+      border: 5px solid #f0c400;
+      -webkit-transform: translate(-50%, -50%);
+      -ms-transform: translate(-50%, -50%);
+      transform: translate(-50%, -50%);
+    }
+
+    #pin-wrap .pin .pin-popup {
+      background-color: white;
+      border-radius: 4px;
+      width: 300px;
+      padding: 15px 10px;
+      -webkit-box-shadow: 0px 0px 40px rgba(0, 0, 0, 0.2);
+      box-shadow: 0px 0px 40px rgba(0, 0, 0, 0.2);
+      -webkit-transform: translate(0, 35px);
+      -ms-transform: translate(0, 35px);
+      transform: translate(0, 35px);
+      text-align: right;
+    }
+
+    #pin-wrap .pin .pin-popup .annotation-text-pin {
+      background-color: #eeeeee;
+      padding: 15px 10px;
+      border-radius: 4px;
+      color: #34495e;
+      font-size: 16px;
+      font-weight: 600;
+      text-align: left;
+      border: none;
+      height: 100px;
+      max-height: 100px;
+      min-height: 100px;
+      width: 100%;
+      margin-bottom: 20px;
+    }
+
+    #pin-wrap .pin .pin-popup button {
+      display: inline-block;
+      margin-left: 10px;
+      min-width: 10px;
+    }
+  </style>
+  <script>
+    $(document).ready(function () {
+      $('#pin-wrap').pinout({ image: 'https://images-na.ssl-images-amazon.com/images/I/A1Be3EmjWcL.jpg', removeButtonText: 'Rimuovi', saveButtonText: 'Salva' });
+    });
+  </script>
+</body>
+
+</html>

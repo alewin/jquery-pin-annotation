@@ -1,2 +1,3 @@
 # jquery-pin-annotation
-jquery pin annotation plugin [ under development ]
+
+jQuery pin annotation plugin [ under development ]
