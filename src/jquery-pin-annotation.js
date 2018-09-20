@@ -16,13 +16,15 @@
       onPinAdded: function() {},
       onPinPopUpOpen: function() {},
       onPinPopUpClose: function() {},
+      onPinPopUpSave: function() {},
+      onPinPopUpRemove: function() {},
     };
     var settings = $.extend({}, defaults, options);
 
     var popUpDom = {
       img: `<img src="${settings.image}" alt="">`,
-      btn_save: `<button class="btn">${settings.saveButtonText}</button>`,
-      btn_remove: `<button class='btn remove-btn'>${settings.removeButtonText}</button>`,
+      btn_save: `<button class="btn save-pin-btn">${settings.saveButtonText}</button>`,
+      btn_remove: `<button class='btn remove-pin-btn'>${settings.removeButtonText}</button>`,
     };
 
     if ($.isFunction(settings.onLoadPlugin)) {
@@ -40,9 +42,6 @@
     var openPin = function($pin) {
       console.log('open pin ', $pin.find('.pin-popup').length);
 
-      const pinX = $pin.data('x'); //(44.12003244120032 * $pinWrap.width()) / 100;
-      const pinY = $pin.data('y'); //(44.12003244120032 * $pinWrap.width()) / 100;
-
       if (settings.closeOtherPopups) {
         $pinWrap.find('.pin-popup').remove();
       }
@@ -51,7 +50,9 @@
         class: 'pin-popup',
         append: `<textarea placeholder='${settings.placeholderText}' class='annotation-text-pin'> ${$pin.data('annotation')} </textarea>${popUpDom.btn_save} ${popUpDom.btn_remove}`,
       }).appendTo($pin);
-      $pin.find('.pin-popup textarea').val('');
+      if (!$pin.data('annotation')) {
+        $pin.find('.pin-popup textarea').val('');
+      }
 
       // controllo che il popup non superi i margini top right bottom left
       // dimensione totale del modale pinWrap -
@@ -59,19 +60,26 @@
       const ymargin = $pinWrap.height() - ($pin.offset().top + $('.pin-popup').height());
 
       if (xmargin < 0) {
-        console.log(xmargin);
         $pin.addClass('right');
       }
       if (ymargin < 0) {
-        console.log(ymargin);
         $pin.addClass('bottom');
       }
-
-      console.log(xmargin, ymargin);
-
       if ($.isFunction(settings.onPinPopUpOpen)) {
         settings.onPinPopUpOpen.call(this);
       }
+
+      $('.pin-popup .save-pin-btn').click(function(e) {
+        const annotationText = $(e.target)
+          .prev('.annotation-text-pin')
+          .val();
+        const pin = e.target.closest('.pin');
+        $(pin).data('annotation', annotationText);
+        closePin($(pin));
+        if ($.isFunction(settings.onPinPopUpSave)) {
+          settings.onPinPopUpSave.call(this);
+        }
+      });
     };
 
     var closePin = function($pin) {
@@ -88,7 +96,7 @@
 
         console.log('targrt ', $(e.target));
 
-        if ($(e.target).is('.pin-popup .remove-btn')) {
+        if ($(e.target).is('.pin-popup .remove-pin-btn')) {
           removePin($(e.target).closest('.pin'));
           return;
         }
