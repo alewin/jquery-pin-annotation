@@ -40,12 +40,34 @@
     var openPin = function($pin) {
       console.log('open pin ', $pin.find('.pin-popup').length);
 
+      const pinX = $pin.data('x'); //(44.12003244120032 * $pinWrap.width()) / 100;
+      const pinY = $pin.data('y'); //(44.12003244120032 * $pinWrap.width()) / 100;
+
       if (settings.closeOtherPopups) {
         $pinWrap.find('.pin-popup').remove();
       }
 
-      $('<div/>', { class: 'pin-popup', append: `<textarea placeholder='${settings.placeholderText}' class='annotation-text-pin'> ${$pin.data('annotation')} </textarea>${popUpDom.btn_save} ${popUpDom.btn_remove}` }).appendTo($pin);
+      $('<div/>', {
+        class: 'pin-popup',
+        append: `<textarea placeholder='${settings.placeholderText}' class='annotation-text-pin'> ${$pin.data('annotation')} </textarea>${popUpDom.btn_save} ${popUpDom.btn_remove}`,
+      }).appendTo($pin);
       $pin.find('.pin-popup textarea').val('');
+
+      // controllo che il popup non superi i margini top right bottom left
+      // dimensione totale del modale pinWrap -
+      const xmargin = $pinWrap.width() - ($pin.offset().left + $('.pin-popup').width());
+      const ymargin = $pinWrap.height() - ($pin.offset().top + $('.pin-popup').height());
+
+      if (xmargin < 0) {
+        console.log(xmargin);
+        $pin.addClass('right');
+      }
+      if (ymargin < 0) {
+        console.log(ymargin);
+        $pin.addClass('bottom');
+      }
+
+      console.log(xmargin, ymargin);
 
       if ($.isFunction(settings.onPinPopUpOpen)) {
         settings.onPinPopUpOpen.call(this);
@@ -97,13 +119,13 @@
         addPin(tapX, tapY);
       });
     };
-    var addPin = function(posX, posY) {
+    var addPin = function(widthPosX, heigthPosY) {
       console.log('crea pin');
 
-      posX = (posX * 100) / $pinWrap.width();
-      posY = (posY * 100) / $pinWrap.height();
+      const posX = (widthPosX * 100) / $pinWrap.width();
+      const posY = (heigthPosY * 100) / $pinWrap.height();
 
-      $(`<div/>`, { class: 'pin', style: 'left:' + posX + '%; top:' + posY + '%;', 'data-annotation': '' }).appendTo($pinWrap);
+      $(`<div/>`, { class: 'pin', style: `left:${posX}%; top:${posY}%;`, 'data-annotation': '', 'data-x': posX, 'data-y': posY }).appendTo($pinWrap);
 
       if (settings.openPopUpOnAdd) {
         openPin($pinWrap.find('.pin').last());
