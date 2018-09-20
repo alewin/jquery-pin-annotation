@@ -6,13 +6,14 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>jQuery pin Annotation</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js"></script>
   <script src="../src/jquery-pin-annotation.js"></script>
 </head>
 
 <body>
   <div id="pin-wrap">
   </div>
-
   <style>
     #pin-wrap {
       position: relative;
@@ -46,10 +47,10 @@
       padding: 15px 10px;
       -webkit-box-shadow: 0px 0px 40px rgba(0, 0, 0, 0.2);
       box-shadow: 0px 0px 40px rgba(0, 0, 0, 0.2);
-      -webkit-transform: translate(0, 35px);
-      -ms-transform: translate(0, 35px);
-      transform: translate(0, 35px);
       text-align: right;
+      position: absolute;
+      top: 40px;
+      left: 0px;
     }
 
     #pin-wrap .pin .pin-popup .annotation-text-pin {
@@ -72,6 +73,16 @@
       display: inline-block;
       margin-left: 10px;
       min-width: 10px;
+    }
+
+    #pin-wrap .pin.right .pin-popup {
+      left: auto;
+      right: 0;
+    }
+
+    #pin-wrap .pin.bottom .pin-popup {
+      top: auto;
+      bottom: 40px;
     }
   </style>
   <script>
