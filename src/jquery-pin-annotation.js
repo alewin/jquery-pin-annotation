@@ -1,5 +1,5 @@
 (function($) {
-  $.fn.pinannotation = function(options) {
+  $.fn.pinout = function(options) {
     var $pinWrap = $(this);
     var pinHammer;
     var freeze = false;
@@ -8,22 +8,31 @@
       removeButtonText: 'Remove',
       saveButtonText: 'Save',
       placeholderText: 'Add note',
-      defaultAnnotationValue: '',
       image: '',
+      openPopUpOnAdd: false,
       onLoadPlugin: function() {},
       onPinRemove: function() {},
-      onPinAdded: function() {}
+      onPinAdded: function() {},
+      onPinPopUpOpen: function() {},
+      onPinPopUpClose: function() {},
     };
     var settings = $.extend({}, defaults, options);
-    var imgHtml = `<img src="${settings.image}" alt="">`;
+
+    var popUpDom = {
+      img: `<img src="${settings.image}" alt="">`,
+      btn_save: `<button class="btn">${settings.saveButtonText}</button>`,
+      btn_remove: `<button class='btn remove-btn'>${settings.removeButtonText}</button>`,
+    };
 
     if ($.isFunction(settings.onLoadPlugin)) {
-      console.log($(this).id);
       settings.onLoadPlugin.call(this);
     }
 
     var removePin = function($pin) {
       console.log('remove pin');
+      if ($.isFunction(settings.onPinRemove)) {
+        settings.onPinRemove.call(this);
+      }
       $pin.remove();
     };
 
@@ -32,21 +41,20 @@
 
       if ($pin.find('.pin-popup').length > 0) return;
 
-      $('<div/>', {
-        class: 'pin-popup',
-        append: `<textarea class='annotation-text-pin'> ${$pin.data(
-          'annotation'
-        )} </textarea><button class='btn'>${
-          settings.saveButtonText
-        }</button><button class='btn remove-btn'>${
-          settings.removeButtonText
-        }</button>`
-      }).appendTo($pin);
+      $('<div/>', { class: 'pin-popup', append: `<textarea placeholder='${settings.placeholderText}' class='annotation-text-pin'> ${$pin.data('annotation')} </textarea>${popUpDom.btn_save} ${popUpDom.btn_remove}` }).appendTo($pin);
+      $pin.find('.pin-popup textarea').val('');
+
+      if ($.isFunction(settings.onPinPopUpOpen)) {
+        settings.onPinPopUpOpen.call(this);
+      }
     };
 
     var closePin = function($pin) {
       console.log('close pin ');
 
+      if ($.isFunction(settings.onPinPopUpClose)) {
+        settings.onPinPopUpClose.call(this);
+      }
       $pin.find('.pin-popup').remove();
     };
 
@@ -93,17 +101,15 @@
       posX = (posX * 100) / $pinWrap.width();
       posY = (posY * 100) / $pinWrap.height();
 
-      $(`<div/>`, {
-        class: 'pin',
-        style: 'left:' + posX + '%; top:' + posY + '%;',
-        'data-annotation': settings.defaultAnnotationValue,
-        placeholder: settings.placeholderText
-      }).appendTo($pinWrap);
-      openPin($pinWrap);
+      $(`<div/>`, { class: 'pin', style: 'left:' + posX + '%; top:' + posY + '%;', 'data-annotation': '' }).appendTo($pinWrap);
+
+      if (settings.openPopUpOnAdd) {
+        openPin($pinWrap.find('.pin'));
+      }
     };
 
     pinHammer = new Hammer(this[0]);
     clickEvent();
-    return this.append(imgHtml);
+    return this.append(popUpDom.img);
   };
 })(jQuery);
